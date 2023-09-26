@@ -17,3 +17,10 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9000
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/resource_server
+    username: laurocorreia
+    password: Vincere7
+  jpa:
+    show-sql: true
