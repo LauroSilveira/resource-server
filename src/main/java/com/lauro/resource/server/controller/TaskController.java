@@ -51,10 +51,10 @@ public class TaskController {
                 .map(ResponseEntity::ok);
     }
 
-    @DeleteMapping(value = "/delete/{taskId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<TaskDto>> deleteTask(@PathVariable String taskId, @AuthenticationPrincipal Jwt jwt) {
-        log.info("[TaskController] - Received request of user: {} to delete note: {}", jwt.getSubject(), taskId);
-        return this.taskService.deleteTask(taskId)
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<TasksDto>> deleteTask(@PathVariable String id, @AuthenticationPrincipal Jwt jwt) {
+        log.info("[TaskController] - Received request of user: {} to delete note: {}", jwt.getSubject(), id);
+        return this.taskService.deleteTask(id)
                 .map(ResponseEntity::ok);
     }
 }
