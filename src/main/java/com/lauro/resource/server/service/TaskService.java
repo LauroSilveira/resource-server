@@ -55,27 +55,27 @@ public class TaskService {
         }
     }
 
-    public Mono<TaskDto> getNoteById(String taskId) {
-        log.info("[TaskService] - retrieving note with ID: {}", taskId);
-        Optional<Task> taskOptional = this.repository.findById(Long.valueOf(taskId));
+    public Mono<TaskDto> getNoteById(String id) {
+        log.info("[TaskService] - retrieving note with ID: {}", id);
+        Optional<Task> taskOptional = this.repository.findById(Long.valueOf(id));
         if (taskOptional.isPresent()) {
             log.info("[TaskService] - Found note: {}", taskOptional);
             return Mono.just(Task.toTaskDto(taskOptional.get()));
         } else {
-            log.info("[TaskService] - Not Found note: {}", taskId);
+            log.info("[TaskService] - Not Found note: {}", id);
             return Mono.empty();
         }
     }
 
-    public Mono<TaskDto> deleteTask(String taskId) {
-        log.info("[TaskService] - retrieving note with ID: {}", taskId);
-        Optional<Task> taskOptional = this.repository.findById(Long.valueOf(taskId));
+    public Mono<TasksDto> deleteTask(String id) {
+        log.info("[TaskService] - retrieving note with ID: {}", id);
+        Optional<Task> taskOptional = this.repository.findById(Long.valueOf(id));
         if (taskOptional.isPresent()) {
-            log.info("[TaskService] - Found note: {}", taskOptional);
+            log.info("[TaskService] - Found note: {}", id);
             this.repository.deleteById(taskOptional.get().getId());
         } else {
-            log.info("[TaskService] - Not Found note: {}", taskOptional);
+            log.info("[TaskService] - Not Found note: {}", id);
         }
-        return Mono.empty();
+        return this.getAllNotes();
     }
 }
