@@ -35,4 +35,8 @@ public class Task {
         return new TasksDto(tasks.stream().map(task -> new TaskDto(task.getId(), task.getTitle(),
                 task.getDescription())).toList());
     }
+
+    public static TaskDto toTaskDto(Task tasks) {
+        return new TaskDto(tasks.id, tasks.title, tasks.description);
+    }
 }
