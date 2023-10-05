@@ -3,6 +3,7 @@ package com.lauro.resource.server.controller;
 import com.lauro.resource.server.dto.TaskDto;
 import com.lauro.resource.server.dto.TasksDto;
 import com.lauro.resource.server.service.TaskService;
+import com.lauro.resource.server.service.email.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,11 @@ import reactor.core.publisher.Mono;
 public class TaskController {
 
     private final TaskService taskService;
+    private final EmailService emailService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, EmailService emailService) {
         this.taskService = taskService;
+        this.emailService = emailService;
     }
 
     @GetMapping(value = "/notes", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -56,5 +59,11 @@ public class TaskController {
         log.info("[TaskController] - Received request of user: {} to delete note: {}", jwt.getSubject(), id);
         return this.taskService.deleteTask(id)
                 .map(ResponseEntity::ok);
+    }
+
+    @GetMapping("/email/{id}")
+    public Mono<Boolean> senEmail(@PathVariable String id, @AuthenticationPrincipal Jwt jwt) {
+        log.info("[TaskController] - Received request of user: {} to send e-mail", jwt.getSubject());
+         return this.emailService.sendEmail(id);
     }
 }
