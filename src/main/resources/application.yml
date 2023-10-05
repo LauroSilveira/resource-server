@@ -11,7 +11,8 @@ server:
 spring:
   application:
     name: resource-server
-    #call to auhtorization server
+
+  # URL to auhtorization server
   security:
     oauth2:
       resourceserver:
@@ -24,3 +25,20 @@ spring:
     password: Vincere7
   jpa:
     show-sql: true
+
+  # Email Configurations
+  mail:
+    host: smtp.mail.yahoo.com
+    port: 587
+    username: lauro.silveira@ymail.com
+    password: klhpmqtinhjiosda
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
+        connectiontimeout: 5000
+        writetimeout: 3000

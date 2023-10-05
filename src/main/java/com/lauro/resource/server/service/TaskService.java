@@ -5,6 +5,7 @@ import com.lauro.resource.server.dto.TasksDto;
 import com.lauro.resource.server.model.Task;
 import com.lauro.resource.server.repository.TaskRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -78,4 +79,5 @@ public class TaskService {
         }
         return this.getAllNotes();
     }
+
 }
