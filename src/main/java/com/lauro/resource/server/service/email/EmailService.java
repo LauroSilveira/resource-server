@@ -9,9 +9,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 import reactor.core.publisher.Mono;
-import org.thymeleaf.context.Context;
 
 import java.io.IOException;
 import java.util.Locale;
