@@ -7,6 +7,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -30,23 +31,25 @@ public class EmailService implements Email {
     @Override
     public Mono<Boolean> sendEmail(String id) {
         log.info("[EmailService] - sendEmail");
+        String emailTo = "lauro.silveira@ymail.com";
+        String emailFrom = "lauro.silveira@ymail.com";
         final var message = this.mailSender.createMimeMessage();
         Optional<Task> task = this.taskRepository.findById(Long.parseLong(id));
         try {
             if (task.isPresent()) {
-                message.setFrom(new InternetAddress("lauro.silveira@ymail.com"));
-                message.setSubject("Test email from Sticky-note-app");
-                message.setRecipients(Message.RecipientType.TO, "lauro.silveira@outlook.com.br");
+                message.setFrom(emailFrom);
+                message.setSubject("Email of Sticky-note-app");
+                message.setRecipients(Message.RecipientType.TO, emailTo);
                 message.setText("Hello this is your friendly reminder." + "\n" + "You have the followings lists" + "\n "
                         + task.get().getTitle() + "\n\n" + "Items" + "\n" + task.get().getDescription());
             }
 
-            log.info("[EmailService] - Sending Email...");
+            log.info("[EmailService - Sending Email...]");
             this.mailSender.send(message);
-            log.info("[EmailService] - Email Sent!");
+            log.info("[EmailService - Email Sent to: {}]", emailTo);
             return Mono.just(true);
-        } catch (MessagingException ex) {
-            log.error("Faild to send email cause: {}", ex.getMessage());
+        } catch (MessagingException | MailException e) {
+            log.error("Faild to send email cause: {}", e.getMessage());
         }
         return Mono.just(false);
     }
