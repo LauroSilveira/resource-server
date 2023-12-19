@@ -12,17 +12,17 @@ spring:
   application:
     name: resource-server
 
-  # URL to auhtorization server
+  # URL to authorization server
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${AUTHORIZATION_SERVER_URL:http://localhost:9000}
+          issuer-uri: ${AUTHORIZATION_SERVER_URL}
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/resource_server}
-    username: ${DB_USERNAME:laurocorreia}
-    password: ${DB_PASSWORD:Vincere7}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     show-sql: true
 
