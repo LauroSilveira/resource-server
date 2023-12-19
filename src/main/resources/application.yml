@@ -17,21 +17,21 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:9000
+          issuer-uri: ${AUTHORIZATION_SERVER_URL:http://localhost:9000}
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/resource_server
-    username: laurocorreia
-    password: Vincere7
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/resource_server}
+    username: ${DB_USERNAME:laurocorreia}
+    password: ${DB_PASSWORD:Vincere7}
   jpa:
     show-sql: true
 
   # Email Configurations
   mail:
     host: smtp.mail.yahoo.com
-    port:
-    username:
-    password:
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     protocol: smtp
     properties:
       mail:
