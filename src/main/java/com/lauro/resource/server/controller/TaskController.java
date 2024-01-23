@@ -29,12 +29,14 @@ public class TaskController {
     @GetMapping(value = "/notes", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<TasksDto>> getAllNotes(@AuthenticationPrincipal Jwt jwt) {
         log.info("[TaskController] - Received request of user: {} to getAllNotes:", jwt.getSubject());
+        log.info("[TaskController] - Token Value:{}", jwt.getTokenValue());
          return this.taskService.getAllNotes()
                  .map(ResponseEntity::ok);
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<TasksDto>> createTask(@RequestBody TaskDto taskDto, @AuthenticationPrincipal Jwt jwt) {
+        log.info("[TaskController] - Token Value:{}", jwt.getTokenValue());
         log.info("[TaskController] - Received request of user: {} to create new task: {}:", taskDto.toString(), jwt.getSubject());
        return this.taskService.create(taskDto)
                 .map(ResponseEntity::ok);
