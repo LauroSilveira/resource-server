@@ -21,8 +21,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${DB_URL:jdbc:postgresql://localhost:5432/resource_server}
-    username: ${DB_USERNAME:laurocorreia}
-    password: ${DB_PASSWORD:Vincere7}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     show-sql: true
 
@@ -30,8 +30,8 @@ spring:
   mail:
     host: smtp.mail.yahoo.com
     port: 587
-    username: ${MAIL_USERNAME:lauro.silveira@ymail.com}
-    password: ${MAIL_PASSWORD:klhpmqtinhjiosda}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     protocol: smtp
     properties:
       mail:
