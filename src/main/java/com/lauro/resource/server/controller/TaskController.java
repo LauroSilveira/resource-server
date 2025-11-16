@@ -3,67 +3,56 @@ package com.lauro.resource.server.controller;
 import com.lauro.resource.server.dto.TaskDto;
 import com.lauro.resource.server.dto.TasksDto;
 import com.lauro.resource.server.service.TaskService;
-import com.lauro.resource.server.service.email.EmailService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/tasks")
+@RequiredArgsConstructor
 @Slf4j
 public class TaskController {
 
     private final TaskService taskService;
-    private final EmailService emailService;
 
-    public TaskController(TaskService taskService, EmailService emailService) {
-        this.taskService = taskService;
-        this.emailService = emailService;
-    }
-
-    @GetMapping(value = "/notes", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<TasksDto>> getAllNotes(@AuthenticationPrincipal Jwt jwt) {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TasksDto> getAllNotes(@AuthenticationPrincipal Jwt jwt) {
         log.info("[TaskController] - Received request of user: {} to getAllNotes:", jwt.getSubject());
-         return this.taskService.getAllNotes()
-                 .map(ResponseEntity::ok);
+        return ResponseEntity.ok(this.taskService.getAllNotes());
     }
 
-    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<TasksDto>> createTask(@RequestBody TaskDto taskDto, @AuthenticationPrincipal Jwt jwt) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto taskDto, @AuthenticationPrincipal Jwt jwt) {
         log.info("[TaskController] - Received request of user: {} to create new task: {}:", taskDto.toString(), jwt.getSubject());
-       return this.taskService.create(taskDto)
-                .map(ResponseEntity::ok);
+        final var tasksDto = this.taskService.create(taskDto);
+        final var uri = ServletUriComponentsBuilder.fromCurrentRequest().replacePath("/tasks/{id}")
+                .buildAndExpand(tasksDto.id()).toUri();
+        return ResponseEntity.created(uri).body(tasksDto);
     }
 
-    @GetMapping(value = "/note/{taskId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<TaskDto>> getNoteById(@PathVariable String taskId, @AuthenticationPrincipal Jwt jwt) {
+    @GetMapping(value = "/{taskId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TaskDto> getNoteById(@PathVariable Long taskId, @AuthenticationPrincipal Jwt jwt) {
         log.info("[TaskController] - Received request of user: {} to get note: {}", jwt.getSubject(), taskId);
-        return this.taskService.getNoteById(taskId)
-                .map(ResponseEntity::ok);
+        final var taskDto = this.taskService.getNoteById(taskId);
+        return ResponseEntity.ok(taskDto);
     }
 
-    @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<TasksDto>> updateTask(@RequestBody TaskDto taskDto, @AuthenticationPrincipal Jwt jwt) {
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TasksDto> updateTask(@RequestBody TaskDto taskDto, @AuthenticationPrincipal Jwt jwt) {
         log.info("[TaskController] - Received request of user: {} to update task: {}: ", taskDto.toString(), jwt.getSubject());
-        return this.taskService.update(taskDto)
-                .map(ResponseEntity::ok);
+        final var tasksUpdatedDto = this.taskService.update(taskDto);
+        return ResponseEntity.ok().body(tasksUpdatedDto);
     }
 
-    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<TasksDto>> deleteTask(@PathVariable String id, @AuthenticationPrincipal Jwt jwt) {
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
         log.info("[TaskController] - Received request of user: {} to delete note: {}", jwt.getSubject(), id);
-        return this.taskService.deleteTask(id)
-                .map(ResponseEntity::ok);
-    }
-
-    @GetMapping("/email/{id}")
-    public Mono<Boolean> senEmail(@PathVariable String id, @AuthenticationPrincipal Jwt jwt) {
-        log.info("[TaskController] - Received request of user: {} to send e-mail", jwt.getSubject());
-         return this.emailService.sendEmail(id);
+        this.taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }

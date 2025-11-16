@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,12 +30,7 @@ public class Task {
         return new Task(null, dto.title(), dto.description());
     }
 
-    public static TasksDto toTaskDto(List<Task> tasks) {
-        return new TasksDto(tasks.stream().map(task -> new TaskDto(task.getId(), task.getTitle(),
-                task.getDescription())).toList());
-    }
-
-    public static TaskDto toTaskDto(Task tasks) {
+    public static TaskDto toTaskDto(final Task tasks) {
         return new TaskDto(tasks.id, tasks.title, tasks.description);
     }
 }
